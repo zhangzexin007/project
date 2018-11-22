@@ -122,6 +122,8 @@ window.MineRightBtnName = cc.Enum({
     Mine_Element_Right : 3,
 });
 
+window.FragmentLeftNum = 2;//碎片种类的数量
+window.ElementFragmentBagNum = 1;//元素碎片有多少个等级
 window.ItemNum = 3;//物品种类的数量的数量 
 window.Machine_Equip_Num = 7//机甲部位的数量 
 window.Artillery_Equip_Num = 4;//炮台部位的数量 
@@ -129,6 +131,16 @@ window.Element_Type_Num = 8;//元素类型的数量
 window.EquipTypeNum = 4;//装备、炮台装备的类型的数量 
 window.ItemLevelNum = 6;//总共有多少个等级
 window.MineNum = 4;//矿区数量
+
+//碎片名字
+window.FragmentLeftName = cc.Enum({
+    '合金' : 0,
+    '元素' : 1,
+});
+window.FragmentLeftType = cc.Enum({
+    Alloy : 0,
+    Element : 1,
+});
 
 //物品名字
 window.ItemName = cc.Enum({
@@ -144,6 +156,12 @@ window.ItemArtilleryName = cc.Enum({
     "Armor" : 1,        //装甲
     "Base" : 2,         //底座
     "Bullet" : 3,       //炮弹
+});
+window.ArtilleryLeftName = cc.Enum({
+    '炮身' : 0,
+    '炮架' : 1,
+    '底座' : 2,
+    '炮弹' : 3,
 });
 
 //机甲部位的名字
@@ -168,6 +186,16 @@ window.ItemElementName = cc.Enum({
     "BJ" : 6,
     "GD" : 7,
 });
+window.ElementLeftName = cc.Enum({
+    '血量' : 0,
+    '攻击' : 1,
+    '防御' : 2,
+    '攻速' : 3,
+    '闪避' : 4,
+    '命中' : 5,
+    '暴击' : 6,
+    '格挡' : 7,
+});
 //等级
 window.ItemLevel = cc.Enum({
     "Level1" : 0,
@@ -185,6 +213,12 @@ window.EquipType = cc.Enum({
     "Part" : 2,
     "Whole" : 3,
 });
+window.EquipName = cc.Enum({
+    '碎片' : 0,
+    '零件' : 1,
+    '部件' : 2,
+    '装甲' : 3,
+}),
 
 //各矿区的工作人数
 window.MineNameWork = cc.Enum({
@@ -629,6 +663,7 @@ window.Alloy = cc.Enum({
 window.Element = cc.Enum({
     '元素碎片' : 0,
 })
+//------------------------------------------------------
 //----------------------元素-----------------------------
 window.HPElement = cc.Enum({
     '白色血量元素' : 0,

@@ -1,8 +1,5 @@
-var hejin = require('Alloy');
-var yuansu = require('Element');
-var zhuangbei = require('Machine')
-var pao = require('Artillery');
-
+window.InitLeftBtnType = 0;
+window.InitTopBtnType = 0;
 cc.Class({
     extends: cc.Component,
 
@@ -27,59 +24,51 @@ cc.Class({
         var LeftName;
         switch(type){
             case '1':
-            bagNum = yuansu.yuansuBagNum;
-            bagName = yuansu.yuansuBagName;
-            bagType = ItemLevel;
-            TopBtnNum = yuansu.yuansuTopNum;
-            TopName = yuansu.yuansuTopName;
-            TopBtnType = yuansu.yuansuTopType;
-            LeftBtnNum = yuansu.yuansuLeftNum;
-            LeftName = yuansu.yuansuLeftName;
-            LeftBtnType = ItemElementName;
+            bagNum = window.ItemLevelNum;
+            TopBtnNum = 0;
+            TopName = null;
+            InitTopBtnType = null;
+            LeftBtnNum = window.Element_Type_Num;
+            LeftName = window.ElementLeftName;
+            InitLeftBtnType = ItemElementName;
             break;
             case '2':
-            bagNum = zhuangbei.zhuangbeiBagNum;
-            bagName = zhuangbei.zhuangbeiBagName;
-            bagType = ItemLevel;
-            TopBtnNum = zhuangbei.zhuangbeiTopNum;
-            TopName = zhuangbei.zhuangbeiTopName;
-            TopBtnType = EquipType;
-            LeftBtnNum = zhuangbei.zhuangbeiLeftNum;
-            LeftName = zhuangbei.zhuangbeiLeftName;
-            LeftBtnType = ItemMachineName;
+            bagNum = window.ItemLevelNum;
+            TopBtnNum = window.EquipTypeNum;
+            TopName = window.EquipName;
+            InitTopBtnType = window.EquipType;
+            LeftBtnNum = window.Machine_Equip_Num;
+            LeftName = window.ItemType;
+            InitLeftBtnType = window.ItemBtnType;
             break;
             case '3':
-            bagNum = pao.paoBagNum;
-            bagName = pao.paoBagName;
-            bagType = pao.paoBagType;
-            TopBtnNum = pao.paoTopNum;
-            TopName = pao.paoTopName;
-            TopBtnType = EquipType;
-            LeftBtnNum = pao.paoLeftNum;
-            LeftName = pao.paoLeftName;
-            LeftBtnType = ItemArtilleryName;
+            bagNum = window.ItemLevelNum;
+            TopBtnNum = window.EquipTypeNum;
+            TopName = window.EquipName;
+            InitTopBtnType = window.EquipType;
+            LeftBtnNum = window.Artillery_Equip_Num;
+            LeftName = window.ArtilleryLeftName;
+            InitLeftBtnType = ItemArtilleryName;
             break;
             case '4':
-            bagNum = hejin.hejinBagNum;
-            bagName = hejin.hejinBagName;
-            bagType = hejin.hejinBagType;
-            TopBtnNum = hejin.hejinTopNum;
-            TopName = hejin.hejinTopName;
-            TopBtnType = hejin.hejinTopType;
-            LeftBtnNum = hejin.hejinLeftNum;
-            LeftName = hejin.hejinLeftName;
-            LeftBtnType = hejin.hejinLeftType;
+            bagNum = window.ItemLevelNum;
+            TopBtnNum = 0;
+            TopName = null;
+            InitTopBtnType = null;
+            LeftBtnNum = window.FragmentLeftNum;
+            LeftName = window.FragmentLeftName;
+            InitLeftBtnType = window.FragmentLeftType;
             break;
         }
         if(MainSceneBtnTag == 0){
-            self.LoadFab(BottomNode,newBag,0,95,bagNum,bagName,bagType,null);//中
+            self.LoadFab(BottomNode,newBag,0,95,bagNum,null,null,null);//中
         }
         else{
             self.LoadFab(BottomNode,newBag,0,95,bagNum,bagName,bagType,window.JCBagName);//中
         }
         
-        self.LoadFab(TopNode,newBtnTop,90,-5,TopBtnNum,TopName,TopBtnType,null);//左
-        self.LoadFab(LeftNode,newBtnLeft,0,61,LeftBtnNum,LeftName,LeftBtnType,null);//上
+        self.LoadFab(TopNode,newBtnTop,90,-5,TopBtnNum,TopName,InitTopBtnType,null);//左
+        self.LoadFab(LeftNode,newBtnLeft,0,61,LeftBtnNum,LeftName,InitLeftBtnType,null);//上
     },                                      
     LoadLightFab:function(node,Num,posX,posY,sizeHeight){
         var newLight = null;
@@ -155,10 +144,10 @@ cc.Class({
                             bagName = InterfaceName+'_'+ItemElementName[0];
                             break;
                             case '2':
-                            bagName = InterfaceName+'_'+ItemMachineName[0]+'_'+EquipType[0];
+                            bagName = InterfaceName+'_'+ItemMachineName[0]+'_'+window.EquipType[0];
                             break;
                             case '3':
-                            bagName = InterfaceName+'_'+ItemArtilleryName[0]+'_'+EquipType[0];
+                            bagName = InterfaceName+'_'+ItemArtilleryName[0]+'_'+window.EquipType[0];
                             break;
                             case '4':
                             bagName = InterfaceName;
@@ -185,7 +174,7 @@ cc.Class({
                     }
                     var LevelNum = gg.NumShowType( Number(gg.getDataFormLocality(LevelName)));//根据名字获取数量
                     Box.getChildByName("num").getComponent("cc.Label").string =  LevelNum;
-                    Box.getChildByName("Upgrade").name = TypeList[a];
+                    //Box.getChildByName("Upgrade").name = TypeList[a];
                     var pos = cc.p(Posx,-a*Posy - size.height/2);
                     Box.setPosition(pos);
                     node.setContentSize(cc.size(size.width,(Num + 1)*size.height));
@@ -234,32 +223,32 @@ cc.Class({
             }
         });
     },
-    LeftBtnSelect:function(event){//左边高亮按钮
+    LeftBtnSelect:function(node){//左边高亮按钮
         for(let i = 0; i < LeftBtnNum; i++){
-            let LeftSelect = cc.find('ItemResidentNode/Mask/IitemBack/LeftScrollview/view/content').getChildByName(LeftBtnType[i]).getChildByName("Select");
+            let LeftSelect = cc.find('ItemResidentNode/Mask/IitemBack/LeftScrollview/view/content').getChildByName(InitLeftBtnType[i]).getChildByName("Select");
             if(LeftSelect.active) {
                 LeftSelect.active = false;
             }
         }
-        event.active = true;
+        node.active = true;
     },
-    TopBtnSelect:function(event){//顶部高亮按钮
+    TopBtnSelect:function(node){//顶部高亮按钮
         for(let i = 0; i < TopBtnNum; i++){
-            let LeftSelect = cc.find('ItemResidentNode/Mask/IitemBack/TopScrollview/view/content').getChildByName(TopBtnType[i]).getChildByName("Select");
-            if(LeftSelect.active) {
-                LeftSelect.active = false;
+            let TopSelect = cc.find('ItemResidentNode/Mask/IitemBack/TopScrollview/view/content').getChildByName(InitTopBtnType[i]).getChildByName("Select");
+            if(TopSelect.active) {
+                TopSelect.active = false;
             }
         }
-        event.active = true;
+        node.active = true;
     },
-    ChoiceSelect:function(event,Num,Type){
+    ChoiceSelect:function(node,Num,Type){
         for(let i = 0; i < Num; i++){
             let ChoiceSelect = cc.find('ItemResidentNode/panel/bg/Popup/Node/BoxScrollview/view/content').getChildByName(Type[i]).getChildByName("Select");
             if(ChoiceSelect.active) {
                 ChoiceSelect.active = false;
             }
         }
-        event.active = true;
+        node.active = true;
     }
     // called every frame, uncomment this function to activate update callback
     // update: function (dt) {

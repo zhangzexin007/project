@@ -29,26 +29,14 @@ window.InterfaceBtnNum = 4;//界面按钮数量
 window.LeftBtnNum = 0;//包裹顶部按钮数量
 window.TopBtnNum = 0;//包裹左边按钮数量
 window.ChoiceBtnName = 0;//合成选择按钮名字
-
-window.LeftBtnType = 0;
-window.TopBtnType = 0;
-
 window.clickBtnTag = 0;//机舱合成按钮Tag
 window.JCBagName = 0;
-
 window.GloBalName = 0;//获取全局枚举名字
-
-
-var hejin = require('Alloy');
-var yuansu = require('Element');
-var zhuangbei = require('Machine')
-var pao = require('Artillery');
 cc.Class({
     extends: cc.Component,
 
     properties: {
     },
-
     // use this for initialization
     onLoad: function () {
         Number(gg.saveDataToLocality('Alloy_Level1',10000000000000));
@@ -106,12 +94,29 @@ cc.Class({
         var panelJS = cc.find('ItemResidentNode').getComponent('panel');
         panelJS.ChoiceSelect(node,ChoiceNum,ChoiceType);
     },
+    LeftBtnClick:function(event,Equip_Num){
+        for(var i = 0; i < Equip_Num; i++){
+            if(event.currentTarget.tag == i){
+                leftBtnName = event.currentTarget.name;
+                leftBtnType = i;
+            }
+        }
+    },
+    TopBtnClick:function(event){
+        for(var j = 0; j < window.EquipTypeNum; j++){
+            if(event.currentTarget.tag == j){
+                topBtnName = event.currentTarget.name;
+                topBtnType = j;
+                bagName = InterfaceName + '_' + leftBtnName + '_' + topBtnName;
+                this.disNext(InterfaceType,leftBtnType,bagName);
+                this.TopBtnInfo(event);
+            }
+        }
+    },
     zhuangbeilan:function(event,type){//包裹栏函数
         var bagPrefab = 'prefab/bag';
-        var name = event.currentTarget.name;
-        
         clickBtnTag = event.currentTarget.getParent().getParent().tag;//机舱合成按钮的tag
-        if(type != null){
+        if(type < 5){
             switch(type){
                 case '1':
                 this.optionButton(event,type);
@@ -132,219 +137,40 @@ cc.Class({
             var BottomNode = ItemResidentNode.getChildByName('Mask').getChildByName('IitemBack').getChildByName('BottomScrollview').getChildByName('view').getChildByName('content');
             var panelJS = ItemResidentNode.getComponent('panel');      
             panelJS.delBagPrefab(BottomNode);
-            switch(name){
-                case 'Alloy':
-                leftBtnName = 'Alloy';
-                bagName = InterfaceName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,hejin.hejinBagNum,hejin.hejinBagName,hejin.hejinBagType,bagName);//中
-                leftBtnType = 0;
+            switch(InterfaceType){
+                case '1':
+                this.LeftBtnClick(event,window.Element_Type_Num);
+                bagName = InterfaceName +'_'+leftBtnName;
+                panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
                 this.LeftBtnInfo(event);
                 break;
-                case 'Element':
-                leftBtnName = 'Element';
+                case '2':
+                if(type == 5){
+                    this.LeftBtnClick(event,window.Machine_Equip_Num);
+                    bagName = InterfaceName + '_' + leftBtnName + '_' + topBtnName;
+                    panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
+                    this.LeftBtnInfo(event);
+                }
+                else if(type == 6){
+                    this.TopBtnClick(event);
+                }
+                break;
+                case '3':
+                if(type == 5){
+                    this.LeftBtnClick(event,window.Artillery_Equip_Num);
+                    bagName = InterfaceName + '_' + leftBtnName + '_' + topBtnName;
+                    panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
+                    this.LeftBtnInfo(event);
+                }
+                else if(type == 6){
+                    this.TopBtnClick(event);
+                }
+                break;
+                case '4':
+                this.LeftBtnClick(event,window.FragmentLeftNum);
                 bagName = leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,hejin.yuansuBagNum,hejin.yuansuBagName,yuansu.yuansuBagType,bagName);//中
-                leftBtnType = 1;
+                panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
                 this.LeftBtnInfo(event);
-                break;
-                case 'HP':
-                leftBtnName = 'HP';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 0;
-                this.LeftBtnInfo(event);
-                break;
-                case 'GJ':
-                leftBtnName = 'GJ';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 1;
-                this.LeftBtnInfo(event);
-                break;
-                case 'FY':
-                leftBtnName = 'FY';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 2;
-                this.LeftBtnInfo(event);
-                break;
-                case 'GS':
-                leftBtnName = 'GS';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 3;
-                this.LeftBtnInfo(event);
-                break;
-                case 'SB':
-                leftBtnName = 'SB';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 4;
-                this.LeftBtnInfo(event);
-                break;
-                case 'MZ':
-                leftBtnName = 'MZ';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 5;
-                this.LeftBtnInfo(event);
-                break;
-                case 'BJ':
-                leftBtnName = 'BJ';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 6;
-                this.LeftBtnInfo(event);
-                break;
-                case 'GD':
-                leftBtnName = 'GD';
-                bagName = InterfaceName +'_'+leftBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,yuansu.yuansuBagNum,yuansu.yuansuBagName,yuansu.yuansuBagType,bagName);
-                leftBtnType = 7;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Head':
-                leftBtnName = 'Head';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 0;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Shoulder':
-                leftBtnName = 'Shoulder';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 1;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Chest':
-                leftBtnName = 'Chest';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 2;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Hand':
-                leftBtnName = 'Hand';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 3;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Skirt':
-                leftBtnName = 'Skirt';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 4;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Leg':
-                leftBtnName = 'Leg';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 5;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Foot':
-                leftBtnName = 'Foot';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                leftBtnType = 6;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Body':
-                leftBtnName = 'Body';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                leftBtnType = 0;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Armor':
-                leftBtnName = 'Armor';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                leftBtnType = 1;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Base':
-                leftBtnName = 'Base';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                leftBtnType = 2;
-                this.LeftBtnInfo(event);
-                break;
-                case 'Bullet':
-                leftBtnName = 'Bullet';
-                bagName = InterfaceName +'_'+leftBtnName+'_'+topBtnName;
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                leftBtnType = 3;
-                this.LeftBtnInfo(event);
-                break;
-
-                case "Debris":
-                topBtnName = "Debris";
-                topBtnType = 0;
-
-                if(leftBtnType == 0){
-                   
-                    if(InterfaceType == 2){
-                        leftBtnName = ItemMachineName[0];
-                    }
-                    else if(InterfaceType == 3){
-                        leftBtnName = ItemArtilleryName[0];
-                    }
-                }
-                bagName = InterfaceName +'_'+ leftBtnName +'_'+topBtnName;
-                this.disNext(InterfaceType,leftBtnType,bagName);
-                this.TopBtnInfo(event);
-                break;
-                case "Component":
-                topBtnName = "Component";
-                topBtnType = 1;
-                if(leftBtnType == 0){
-                   
-                    if(InterfaceType == 2){
-                        leftBtnName = ItemMachineName[0];
-                    }
-                    else if(InterfaceType == 3){
-                        leftBtnName = ItemArtilleryName[0];
-                    }
-                }
-                bagName = InterfaceName +'_'+ leftBtnName +'_'+ topBtnName;
-                this.disNext(InterfaceType,leftBtnType,bagName);
-                this.TopBtnInfo(event);
-                break;
-                case "Part":
-                topBtnName = "Part";
-                topBtnType = 2;
-                if(leftBtnType == 0){
-                    
-                    if(InterfaceType == 2){
-                        leftBtnName = ItemMachineName[0];
-                    }
-                    else if(InterfaceType == 3){
-                        leftBtnName = ItemArtilleryName[0];
-                    }
-                }
-                bagName = InterfaceName +'_'+ leftBtnName +'_'+ topBtnName;
-                this.disNext(InterfaceType,leftBtnType,bagName);
-                this.TopBtnInfo(event);
-                break;
-                case "Whole":
-                topBtnName = "Whole";
-                topBtnType = 3;
-                if(leftBtnType == 0){
-                    
-                    if(InterfaceType == 2){
-                        leftBtnName = ItemMachineName[0];
-                    }
-                    else if(InterfaceType == 3){
-                        leftBtnName = ItemArtilleryName[0];
-                    }
-                }
-                bagName = InterfaceName +'_'+ leftBtnName +'_'+ topBtnName;
-                this.disNext(InterfaceType,leftBtnType,bagName);
-                this.TopBtnInfo(event);
                 break;
             }
         }
@@ -356,44 +182,17 @@ cc.Class({
         var BottomNode = ItemResidentNode.getChildByName('Mask').getChildByName('IitemBack').getChildByName('BottomScrollview').getChildByName('view').getChildByName('content');         
         panelJS.delBagPrefab(BottomNode);
         if(InterfaceType == 2){
-            switch(leftType){
-                case 0:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 1:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 2:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 3:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 4:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 5:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
-                case 6:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,zhuangbei.zhuangbeiBagNum,zhuangbei.zhuangbeiBagName,zhuangbei.zhuangbeiBagType,bagName);
-                break;
+            for(var i = 0; i< window.Machine_Equip_Num; i++){
+                if(leftType == i){
+                    panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
+                }
             }
         }
         else if(InterfaceType == 3){
-            switch(leftType){
-                case 0:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                break;
-                case 1:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                break;
-                case 2:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                break;
-                case 3:
-                panelJS.LoadFab(BottomNode,bagPrefab,0,95,pao.paoBagNum,pao.paoBagName,pao.paoBagType,bagName);
-                break;
+            for(var i = 0; i < window.Artillery_Equip_Num; i++){
+                if(leftType == i){
+                    panelJS.LoadFab(BottomNode,bagPrefab,0,95,window.ItemLevelNum,null,null,bagName);
+                }
             }
         }
     },
@@ -410,7 +209,7 @@ cc.Class({
             COUNT = AlloyUpgradeNum;
         }
         
-        var TotalName = Total + MaterialName;
+        var TotalName =  gg.NumShowType(Total) + MaterialName;
         if(btnTag == 1){//合成
             SliderNum = Math.floor(Number(Total)/Number(COUNT)*prog);
             consumeNum = SliderNum*COUNT;
@@ -426,9 +225,9 @@ cc.Class({
                 consumeNum = SliderNum*COUNT;
                 TipsName = '每' + COUNT + '个' + MaterialName + '升级1个' + DisName;
         }
-        consumeName =  consumeNum + MaterialName; 
+        consumeName =  gg.NumShowType(consumeNum) + MaterialName; 
         obtainNum = SliderNum;
-        obtainName = obtainNum + DisName;
+        obtainName =  gg.NumShowType(obtainNum) + DisName;
         
         cc.find('ItemResidentNode/panel/bg/TotalNum').getComponent(cc.Label).string = TotalName.toString();
         cc.find('ItemResidentNode/panel/bg/consumeNum').getComponent(cc.Label).string = consumeName.toString();
@@ -497,7 +296,7 @@ cc.Class({
         }
         else if(bagName == 'Element'){
             this.SliderEffect(window.Element[Fabtag],null,null,window.HPElement[Fabtag]);
-            panelJS.LoadChoiceFab(Popupnode,yuansu.yuansuLeftNum,yuansu.yuansuLeftName,yuansu.yuansuLeftType);
+            panelJS.LoadChoiceFab(Popupnode,window.Element_Type_Num,window.ElementLeftName,window.ItemElementName);
             window.ChoiceBtnName = 'Element_HP' + ItemLevel[Fabtag];
         }
     },
@@ -506,7 +305,7 @@ cc.Class({
         var a;
         if(leftBtnType == 0){
             a = 1;
-            Num = hejin.hejinBagNum;
+            Num = window.ItemLevelNum;
             SynthesisNum = AlloyUpgradeNum;
             FragmentName = window.Alloy;
             this.ChoiceBtnInfo(event,window.AlloyChoiceNum,AlloyChoiceType);
@@ -522,10 +321,10 @@ cc.Class({
         }
         else{
             a = 0;
-            Num = hejin.yuansuBagNum;
+            Num = window.ItemLevelNum;
             SynthesisNum = ElementUpgradeNum;
             FragmentName = window.Element;
-            this.ChoiceBtnInfo(event,yuansu.yuansuLeftNum,yuansu.yuansuLeftType);
+            this.ChoiceBtnInfo(event,window.Element_Type_Num,ItemElementName);
             for(let i = 0; i < Num; i++){
                 if(Fabtag == i){
                     this.SliderEffect(FragmentName[i],null,null,Name[i]);
@@ -536,65 +335,25 @@ cc.Class({
         }
     },
     ChoiceBtn:function(event){//升级界面选择栏按钮
-        switch(event.currentTarget.name){
-            case 'Head' :
-            this.BagLevel(event,window.HeadMachineDebris);
-            break;
-            case 'Shoulder':
-            this.BagLevel(event,window.ShoulderMachineDebris);
-            break;
-            case 'Chest' :
-            this.BagLevel(event,window.ChestMachineDebris);
-            break;
-            case 'Hand':
-            this.BagLevel(event,window.HandMachineDebris);
-            break;
-            case 'Skirt' :
-            this.BagLevel(event,window.SkirtMachineDebris);
-            break;
-            case 'Leg':
-            this.BagLevel(event,window.LegMachineDebris);
-            break;
-            case 'Foot' :
-            this.BagLevel(event,window.FootMachineDebris);
-            break;
-            case 'Body':
-            this.BagLevel(event,window.BodyArtilleryDebris);
-            break;
-            case 'Armor' :
-            this.BagLevel(event,window.ArmorArtilleryDebris);
-            break;
-            case 'Base':
-            this.BagLevel(event,window.BaseArtilleryDebris);
-            break;
-            case 'Bullet' :
-            this.BagLevel(event,window.BulletArtilleryDebris);
-            break;
-            //-------------------------
-            case 'HP':
-            this.BagLevel(event,window.HPElement);
-            break;
-            case 'GJ':
-            this.BagLevel(event,window.GJElement);
-            break;
-            case 'FY':
-            this.BagLevel(event,window.FYElement);
-            break;
-            case 'GS':
-            this.BagLevel(event,window.GSElement);
-            break;
-            case 'SB':
-            this.BagLevel(event,window.SBElement);
-            break;
-            case 'MZ':
-            this.BagLevel(event,window.MZElement);
-            break;
-            case 'BJ':
-            this.BagLevel(event,window.BJElement);
-            break;
-            case 'GD':
-            this.BagLevel(event,window.GDElement);
-            break;
+        if(leftBtnType == 0){
+            for(var i = 0; i < window.AlloyChoiceNum; i++){
+                if(event.currentTarget.tag == i && i < window.Machine_Equip_Num){
+                    var GloBalName = eval(event.currentTarget.name + ItemName[leftBtnType+1] + topBtnName);
+                    this.BagLevel(event,GloBalName);
+                }
+                else if(event.currentTarget.tag == i && i >= window.Machine_Equip_Num){
+                    var GloBalName = eval(event.currentTarget.name + ItemName[leftBtnType+2] + topBtnName);
+                    this.BagLevel(event,GloBalName);
+                }
+            }
+        }
+        else{
+            for(var i = 0; i < window.Element_Type_Num; i++){
+                if(event.currentTarget.tag == i){
+                    var GloBalName = eval(event.currentTarget.name + ItemName[leftBtnType-1]);
+                    this.BagLevel(event,GloBalName);
+                }
+            }
         }
     },
     changeSprite:function(type){//改变精灵图片
@@ -690,10 +449,10 @@ cc.Class({
                 bagName = InterfaceName + '_' + ItemElementName[0];
                 break;
                 case '2':
-                bagName = InterfaceName + '_' + ItemElementName[0] + '_'  + EquipType[0];
+                bagName = InterfaceName + '_' + ItemElementName[0] + '_'  + window.EquipType[0];
                 break;
                 case '3':
-                bagName = InterfaceName + '_' + ItemArtilleryName[0]+ '_'  + EquipType[0];
+                bagName = InterfaceName + '_' + ItemArtilleryName[0]+ '_'  + window.EquipType[0];
                 break;
                 case '4':
                 bagName = InterfaceName;
